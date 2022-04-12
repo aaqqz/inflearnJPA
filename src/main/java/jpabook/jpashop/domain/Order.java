@@ -13,8 +13,7 @@ import java.util.List;
 @Getter @Setter
 public class Order {
 
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue
     @Column(name = "order_id")
     private Long id;
 
