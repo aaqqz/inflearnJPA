@@ -36,7 +36,7 @@ public class JpaMain {
 //            em.remove(findMember);
             // 3, 회원 삭제 S
 
-            //-- JPQL --
+            //-- JPQL -- (JPQL 실행시 flush 실행(DB 커밋))
 //            List<Member> result = em.createQuery("select m from Member m", Member.class)
 //                    .setFirstResult(1)
 //                    .setMaxResults(10)
@@ -60,12 +60,34 @@ public class JpaMain {
 //            Member findMember1 = em.find(Member.class, 101L);
 //            Member findMember2 = em.find(Member.class, 101L);
 //            System.out.println("result = " + (findMember1 == findMember2 ));
+//
+//            Member member1 = new Member(150L, "A");
+//            Member member2 = new Member(160L, "B");
+//            em.persist(member1);
+//            em.persist(member2);
+//            System.out.println("=================");
 
-            Member member1 = new Member(150L, "A");
-            Member member2 = new Member(160L, "B");
-            em.persist(member1);
-            em.persist(member2);
-            System.out.println("=================");
+
+            // 수정
+//            Member member = em.find(Member.class, 150L);
+//            member.setName("ZZZZ");
+
+//            Member member = new Member(200L, "member200");
+//            em.persist(member);
+//
+//            em.flush(); // 즉시 쿼리문 실행(영속성 컨텍스트의 변경내용을 데이터베이스에 동기화) 잘 안씀
+//            System.out.println("==================");
+
+            // 준영속 상태 (영속성 컨텍스트에서 관리 X)
+            Member member = em.find(Member.class, 150L);
+            member.setName("AAAA");
+            
+            //em.detach(member); // 커밋이 안된다(select 쿼리만 실행, update 쿼리 실행 X) 거의 안씀, 특정 entity 만 준영속
+            //em.clear(); // 영속성 컨텍스트 완전히 초기화
+            //em.close(); // 영속성 컨텍스트 종료
+            Member member2 = em.find(Member.class, 150L);
+            System.out.println("==================");
+
 
             tx.commit();
         } catch (Exception e) {
