@@ -15,6 +15,14 @@ public class Member {
     //@Column(name = "usename") //DB column 명은 변수명을 따르지만 변경하고 싶은때
     private String name;
 
+    public Member(){
+    }
+
+    public Member(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Long getId() {
         return id;
     }

@@ -37,15 +37,35 @@ public class JpaMain {
             // 3, 회원 삭제 S
 
             //-- JPQL --
-            List<Member> result = em.createQuery("select m from Member m", Member.class)
-                    .setFirstResult(1)
-                    .setMaxResults(10)
-                    .getResultList();
-
-            for (Member member : result) {
-                System.out.println("member.name = " + member.getName());
-            }
+//            List<Member> result = em.createQuery("select m from Member m", Member.class)
+//                    .setFirstResult(1)
+//                    .setMaxResults(10)
+//                    .getResultList();
+//
+//            for (Member member : result) {
+//                System.out.println("member.name = " + member.getName());
+//            }
             //-- JPQL --
+
+            // 엔티티를 생성한 상태(비영속) - JPA 랑 관련이 없다
+//            Member member = new Member();
+//            member.setId(101L);
+//            member.setName("helloJpa");
+//
+//            // 엔티티를 (영속) JPA가 관리
+//            em.persist(member);
+            //em.detach(member); // 영속 상태에서 제거 (영속상태에서 제거되어 insert 실행 안됨)
+
+
+//            Member findMember1 = em.find(Member.class, 101L);
+//            Member findMember2 = em.find(Member.class, 101L);
+//            System.out.println("result = " + (findMember1 == findMember2 ));
+
+            Member member1 = new Member(150L, "A");
+            Member member2 = new Member(160L, "B");
+            em.persist(member1);
+            em.persist(member2);
+            System.out.println("=================");
 
             tx.commit();
         } catch (Exception e) {
