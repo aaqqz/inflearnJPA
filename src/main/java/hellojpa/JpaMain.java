@@ -79,15 +79,22 @@ public class JpaMain {
 //            System.out.println("==================");
 
             // 준영속 상태 (영속성 컨텍스트에서 관리 X)
-            Member member = em.find(Member.class, 150L);
-            member.setName("AAAA");
-            
-            //em.detach(member); // 커밋이 안된다(select 쿼리만 실행, update 쿼리 실행 X) 거의 안씀, 특정 entity 만 준영속
-            //em.clear(); // 영속성 컨텍스트 완전히 초기화
-            //em.close(); // 영속성 컨텍스트 종료
-            Member member2 = em.find(Member.class, 150L);
-            System.out.println("==================");
+//            Member member = em.find(Member.class, 150L);
+//            member.setName("AAAA");
+//
+//            //em.detach(member); // 커밋이 안된다(select 쿼리만 실행, update 쿼리 실행 X) 거의 안씀, 특정 entity 만 준영속
+//            //em.clear(); // 영속성 컨텍스트 완전히 초기화
+//            //em.close(); // 영속성 컨텍스트 종료
+//            Member member2 = em.find(Member.class, 150L);
+//            System.out.println("==================");
 
+
+            Member member = new Member();
+            member.setId(2L);
+            member.setUsername("B");
+            member.setRoleType(RoleType.ADMIN);
+
+            em.persist(member);
 
             tx.commit();
         } catch (Exception e) {
