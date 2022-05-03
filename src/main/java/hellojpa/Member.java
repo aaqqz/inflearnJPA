@@ -7,15 +7,40 @@ import java.util.Date;
 
 @Entity //jpa가 관리한다
 //@Table(name = "USER") //DB table 명은 class 명을 따르지만 변경하고 싶은때
+@TableGenerator(
+        name = "MEMBER_SEQ_GENERATOR",
+        table = "MY_SEQUENCES",
+        pkColumnValue = "MEMBER_SEQ", allocationSize = 1)
 public class Member {
 
     @Id //pk 설정
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "MEMBER_SEQ_GENERATOR")
     private Long id;
 
     // nullable == not null
     @Column(name = "name", nullable = false) //DB column 명은 변수명을 따르지만(default), 변경하고 싶은때 (@Coulm 의 다른 속성들 unique = true, length = 10)
     private String username;
 
+    public Member(){
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /*
     private Integer age;
 
     @Enumerated(EnumType.STRING) // enum type을 쓰고 싶을때 (EnumType.ORDINAL 을 쓰면 안된다(확장성에 문제가 있다))
@@ -35,9 +60,6 @@ public class Member {
 
     @Transient // db랑 관계 없이 메모리상에서 쓰겠다
     private int temp;
-
-    public Member(){
-    }
 
     public Long getId() {
         return id;
@@ -102,4 +124,5 @@ public class Member {
     public void setTemp(int temp) {
         this.temp = temp;
     }
+    */
 }
