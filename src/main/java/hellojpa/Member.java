@@ -5,61 +5,22 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-@Entity //jpa가 관리한다
-//@Table(name = "USER") //DB table 명은 class 명을 따르지만 변경하고 싶은때
-@TableGenerator(
-        name = "MEMBER_SEQ_GENERATOR",
-        table = "MY_SEQUENCES",
-        pkColumnValue = "MEMBER_SEQ", allocationSize = 1)
+@Entity
 public class Member {
 
-    @Id //pk 설정
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "MEMBER_SEQ_GENERATOR")
+    @Id @GeneratedValue
+    @Column(name = "MEMBER_ID")
     private Long id;
 
-    // nullable == not null
-    @Column(name = "name", nullable = false) //DB column 명은 변수명을 따르지만(default), 변경하고 싶은때 (@Coulm 의 다른 속성들 unique = true, length = 10)
-    private String username;
+    @Column(name = "USERNAME")
+    private String userName;
 
-    public Member(){
-    }
+//    @Column(name = "TEAM_ID")
+//    private Long teamId;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    /*
-    private Integer age;
-
-    @Enumerated(EnumType.STRING) // enum type을 쓰고 싶을때 (EnumType.ORDINAL 을 쓰면 안된다(확장성에 문제가 있다))
-    private RoleType roleType;
-
-    // 자주 안씀, java8로 넘어오면서 testLocalDate, testLocalDateTime 을 쓴다
-    @Temporal(TemporalType.TIMESTAMP) // TIMESTAMP ctrl click ( DATE(날짜),TIME(시간),TIMESTAMP(날짜시간))
-    private Date createdDate;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date lastModifiedDate;
-
-    private LocalDate testLocalDate;
-    private LocalDateTime testLocalDateTime;
-
-    @Lob // lob type varchar 를 넘어서는...
-    private String description;
-
-    @Transient // db랑 관계 없이 메모리상에서 쓰겠다
-    private int temp;
+    @ManyToOne
+    @JoinColumn(name = "TEAM_ID")
+    private Team team;
 
     public Long getId() {
         return id;
@@ -69,60 +30,28 @@ public class Member {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public Integer getAge() {
-        return age;
+//    public Long getTeamId() {
+//        return teamId;
+//    }
+//
+//    public void setTeamId(Long teamId) {
+//        this.teamId = teamId;
+//    }
+
+
+    public Team getTeam() {
+        return team;
     }
 
-    public void setAge(Integer age) {
-        this.age = age;
+    public void setTeam(Team team) {
+        this.team = team;
     }
-
-    public RoleType getRoleType() {
-        return roleType;
-    }
-
-    public void setRoleType(RoleType roleType) {
-        this.roleType = roleType;
-    }
-
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public Date getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public void setLastModifiedDate(Date lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public int getTemp() {
-        return temp;
-    }
-
-    public void setTemp(int temp) {
-        this.temp = temp;
-    }
-    */
 }
