@@ -27,16 +27,19 @@ public class JpaMain {
 
             Member member = new Member();
             member.setUserName("member1");
-            member.setTeam(team);
+            member.changeTeam(team); // 연관관계 편의 메소드 생성
             em.persist(member);
 
             em.flush();
             em.clear();
 
-            Member findMember = em.find(Member.class, member.getId());
+            Team findTeam = em.find(Team.class, team.getId());
+            List<Member> members = findTeam.getMembers();
 
-            Team findTeam = findMember.getTeam();
-            System.out.println("findTeam = " + findTeam.getName());
+            System.out.println("=================");
+            for (Member m : members) {
+                System.out.println("m = " + m.getUserName());
+            }
 
 
             tx.commit();

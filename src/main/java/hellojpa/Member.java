@@ -19,7 +19,7 @@ public class Member {
 //    private Long teamId;
 
     @ManyToOne
-    @JoinColumn(name = "TEAM_ID")
+    @JoinColumn(name = "TEAM_ID") // 연관 관계의 주인 (등록, 수정 가능) - 외래키가 있는 곳을 주인으로 정해라
     private Team team;
 
     public Long getId() {
@@ -51,7 +51,10 @@ public class Member {
         return team;
     }
 
-    public void setTeam(Team team) {
+    public void changeTeam(Team team) {
         this.team = team;
+        team.getMembers().add(this); // == team.getMembers().add(member);
+        // 순수 객체 상태를 고려해서 항상 양쪽에 값을 설정
+        // 연관관계 편의 메소드 생성
     }
 }
