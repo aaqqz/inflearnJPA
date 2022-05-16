@@ -5,6 +5,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
 
 
 public class JpaMain {
@@ -21,25 +22,20 @@ public class JpaMain {
 
         try {
 
-            Team team = new Team();
-            team.setName("TeamA");
-            em.persist(team);
-
-            Member member = new Member();
-            member.setUserName("member1");
-            member.changeTeam(team); // 연관관계 편의 메소드 생성
-            em.persist(member);
+            Locker locker = new Locker();
+            locker.setName("locker01");
+            em.persist(locker);
 
             em.flush();
-            em.clear();
 
-            Team findTeam = em.find(Team.class, team.getId());
-            List<Member> members = findTeam.getMembers();
 
-            System.out.println("=================");
-            for (Member m : members) {
-                System.out.println("m = " + m.getUserName());
-            }
+            Member member = new Member();
+            member.setUserName("test01");
+            member.setLocker(locker);
+            em.persist(member);
+
+
+
 
 
             tx.commit();
