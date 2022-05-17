@@ -22,20 +22,13 @@ public class JpaMain {
 
         try {
 
-            Locker locker = new Locker();
-            locker.setName("locker01");
-            em.persist(locker);
+            Movie movie = new Movie();
+            movie.setDirector("aaaa");
+            movie.setActor("bbbb");
+            movie.setName("바람과 함께 사라지다");
+            movie.setPrice(10000);
 
-            em.flush();
-
-
-            Member member = new Member();
-            member.setUserName("test01");
-            member.setLocker(locker);
-            em.persist(member);
-
-
-
+            em.persist(movie);
 
 
             tx.commit();
