@@ -16,7 +16,7 @@
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.use_sql_comments" value="true"/>
             <property name="hibernate.jdbc.batch_size" value="10"/>
-            <property name="hibernate.hbm2ddl.auto" value="create" />
+            <property name="hibernate.hbm2ddl.auto" value="create-drop" />
             <!-- 데이터베이스 스키마 옵션이 많으니 확인 해보가-->
             <!-- 운영장비에는 절대 create, create-drop, update 사용하면 안됨-->
             <!-- 개발초기 : create or update-->
