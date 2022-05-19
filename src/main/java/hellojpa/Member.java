@@ -17,16 +17,18 @@ public class Member extends BaseEntity{
     @Column(name = "USERNAME")
     private String userName;
 
-    @OneToOne
-    @JoinColumn(name = "LOCKER_ID")
-    private Locker locker;
+//    @OneToOne
+//    @JoinColumn(name = "LOCKER_ID")
+//    private Locker locker;
 
-//    @ManyToOne
-//    @JoinColumn(name = "TEAM_ID") // 연관 관계의 주인 (등록, 수정 가능) - 외래키가 있는 곳을 주인으로 정해라
-//    private Team team;
+    // 실무 -> 지연 로딩만 사용 해라 (join table 조회하냐(즉시로딩 EAGER), 안하냐(지연로딩 LAZY))
+    //@ManyToOne(fetch = FetchType.LAZY) // (지연 로딩) proxy로 조회 (member 만 조회할때 team은 proxy로 조회한다, 이후 member.getTeam.getXXX (살제 team 을 사용하는 시점에 team 초기화(DB 조회))
+    @ManyToOne(fetch = FetchType.LAZY) // (즉시 로딩)
+    @JoinColumn
+    private Team team;
 
-    @OneToMany(mappedBy = "member") // 거의 안씀
-    private List<MemberProduct> memberProducts = new ArrayList<>();
+//    @OneToMany(mappedBy = "member") // 거의 안씀
+//    private List<MemberProduct> memberProducts = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -65,11 +67,19 @@ public class Member extends BaseEntity{
 //    }
 
 
-    public Locker getLocker() {
-        return locker;
+//    public Locker getLocker() {
+//        return locker;
+//    }
+//
+//    public void setLocker(Locker locker) {
+//        this.locker = locker;
+//    }
+
+    public Team getTeam() {
+        return team;
     }
 
-    public void setLocker(Locker locker) {
-        this.locker = locker;
+    public void setTeam(Team team) {
+        this.team = team;
     }
 }
