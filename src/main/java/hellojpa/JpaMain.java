@@ -4,7 +4,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.locks.Lock;
 
 
@@ -21,16 +25,11 @@ public class JpaMain {
 
 
         try {
-            Address address = new Address("C", "S", "Z");
 
-            Member member1 = new Member();
-            member1.setUserName("member1");
-            member1.setHomeAddress(address);
-            em.persist(member1);
 
-            Address newAddress = new Address("newCity", address.getStreet(), address.getZipcode());
-            member1.setHomeAddress(newAddress);
-            System.out.println("123");
+
+
+
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
