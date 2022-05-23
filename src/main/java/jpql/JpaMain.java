@@ -1,6 +1,7 @@
 package jpql;
 
 import javax.persistence.*;
+import java.util.List;
 
 
 public class JpaMain {
@@ -17,16 +18,18 @@ public class JpaMain {
         try {
 
             Member member = new Member();
-            member.setUsername("test");
+            member.setUsername("member1");
             member.setAge(10);
             em.persist(member);
 
-            // 반환 타입이 명확할 때 사용
-            TypedQuery<Member> query1 = em.createQuery("select m from Member m", Member.class);
-            TypedQuery<String> query2 = em.createQuery("select m.username from Member m", String.class);
+            em.flush();
+            em.clear();
+            
+            List<Team> result = em.createQuery("select t from Member m join m.team t", Team.class)
+                    .getResultList();
 
-            // 반환 타입이 명확하지 않을 때 사용
-            Query query = em.createQuery("select m.username, m.age from Member m", Member.class);
+
+
 
             tx.commit();
         } catch (Exception e) {
