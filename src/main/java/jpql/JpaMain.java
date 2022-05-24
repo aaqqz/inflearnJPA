@@ -1,6 +1,7 @@
 package jpql;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -16,37 +17,42 @@ public class JpaMain {
         tx.begin();
 
         try {
+            Team team1 = new Team();
+            team1.setName("팀A");
+            em.persist(team1);
 
-            Team team = new Team();
-            team.setName("teamA");
-            em.persist(team);
+            Team team2 = new Team();
+            team2.setName("팀B");
+            em.persist(team2);
 
-            Member member = new Member();
-            member.setUsername("관리자");
-            member.setAge(10);
-            member.setType(MemberType.ADMIN);
+            Member member1 = new Member();
+            member1.setUsername("회원1");
+            member1.setTeam(team1);
+            em.persist(member1);
 
-            member.setTeam(team);
+            Member member2 = new Member();
+            member2.setUsername("회원2");
+            member2.setTeam(team1);
+            em.persist(member2);
 
-            em.persist(member);
+            Member member3 = new Member();
+            member3.setUsername("회원3");
+            member3.setTeam(team2);
+            em.persist(member3);
 
             em.flush();
             em.clear();
 
-            String query = "select group_concat(m.username) from Member m";
-            List<String> resultList = em.createQuery(query, String.class)
+            String query = "select distinct t from Team t join fetch t.members";
+
+            List<Team> resultList = em.createQuery(query, Team.class)
                     .getResultList();
 
-            for (String s : resultList) {
-                System.out.println("s = " + s);
-            }
-
-            String query1 = "select group_concat(m.username) from Member m";
-            List<String> resultList1 = em.createQuery(query1, String.class)
-                    .getResultList();
-
-            for (String s : resultList1) {
-                System.out.println("s = " + s);
+            for (Team team : resultList) {
+                System.out.println("team = " + team.getName() + " | members" + team.getMembers().size());
+                // 회원1, 팀A(SQL)
+                // 회원2, 팀A(1차캐시)
+                // 회원2, 팀B(SQL)
             }
 
 
