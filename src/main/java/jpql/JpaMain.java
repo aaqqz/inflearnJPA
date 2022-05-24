@@ -40,20 +40,17 @@ public class JpaMain {
             member3.setTeam(team2);
             em.persist(member3);
 
-            em.flush();
+//            em.flush();
+//            em.clear();
+
+
+            int resultCount = em.createQuery("update Member m set m.age = 20")
+                    .executeUpdate();
+
             em.clear();
 
-            String query = "select distinct t from Team t join fetch t.members";
-
-            List<Team> resultList = em.createQuery(query, Team.class)
-                    .getResultList();
-
-            for (Team team : resultList) {
-                System.out.println("team = " + team.getName() + " | members" + team.getMembers().size());
-                // 회원1, 팀A(SQL)
-                // 회원2, 팀A(1차캐시)
-                // 회원2, 팀B(SQL)
-            }
+            Member member = em.find(Member.class, member1.getId());
+            System.out.println("member = " + member);
 
 
             tx.commit();

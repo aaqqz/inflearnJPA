@@ -23,7 +23,7 @@
             <!-- 테스트 서버  :  update or validate-->
             <!-- 스테이징과 운영서버  : validate or none-->
             <!-- 그래도 안쓰는거 추천 (쓴다면 validate) 로컬만 쓰기 -->
-
+            <property name="hibernate.default_batch_fetch_size" value="100"/>
         </properties>
     </persistence-unit>
 </persistence>
