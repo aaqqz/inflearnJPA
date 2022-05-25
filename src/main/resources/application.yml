@@ -9,9 +9,10 @@ spring:
       ddl-auto: create # application 실행 시점에 Entity 지우고 다시 만듬
     properties:
       hibernate:
-#        show_sql: true # sql -> System.out 으로 찍음
+#        show_sql: true # 쿼리 로그가 System.out 으로 찍음 권장 X
         format_sql: true
 
 logging:
   level:
-    org.hibernate.SQL: debug # sql -> 로그로 찍음
+    org.hibernate.SQL: debug # 쿼리 로그 남기기
+    org.hibernate.type: trace # 쿼리 파라미터 로그 남기기
