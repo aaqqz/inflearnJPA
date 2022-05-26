@@ -5,6 +5,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -19,6 +21,15 @@ public class Order {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private LocalDateTime orderDate;
+    @OneToMany(mappedBy = "order")
+    private List<OrderItem> orderItems = new ArrayList<>();
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "delivery_id") // OneToOne FK -> Access를 많이 하는곳
+    private Delivery delivery;
+
+    private LocalDateTime orderDate; // 주문 시간
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status; // 주문 상태 [ORDER, CANCEL]
 }
