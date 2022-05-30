@@ -3,8 +3,6 @@ package jpabook.jpashop.service;
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,10 +20,9 @@ public class MemberService {
 
     // 회원가입
     @Transactional // class level에 어노테이션 보다 우선권을 가짐 (readOnly = true) 이면 안되는 - 쓰기 전용 쿼리에 사용
-    public Long join(Member member) {
+    public void join(Member member) {
         validateDuplicateMember(member); // 중복 회원 검증
         memberRepository.save(member);
-        return member.getId();
     }
 
     private void validateDuplicateMember(Member member) {
