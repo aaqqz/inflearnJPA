@@ -20,9 +20,10 @@ public class MemberService {
 
     // 회원가입
     @Transactional // class level에 어노테이션 보다 우선권을 가짐 (readOnly = true) 이면 안되는 - 쓰기 전용 쿼리에 사용
-    public void join(Member member) {
+    public Long join(Member member) {
         validateDuplicateMember(member); // 중복 회원 검증
         memberRepository.save(member);
+        return member.getId();
     }
 
     private void validateDuplicateMember(Member member) {
