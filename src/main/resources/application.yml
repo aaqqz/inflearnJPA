@@ -6,7 +6,8 @@ spring:
     driver-class-name: org.h2.Driver
   jpa:
     hibernate:
-      ddl-auto: create # application 실행 시점에 Entity 지우고 다시 만듬
+      ddl-auto: none
+#      ddl-auto: create # application 실행 시점에 Entity 지우고 다시 만듬
     properties:
       hibernate:
 #        show_sql: true # 쿼리 로그가 System.out 으로 찍음 권장 X
