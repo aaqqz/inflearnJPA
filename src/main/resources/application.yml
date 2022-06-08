@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/datajpa
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+#        show_sql: true # 옵션은 System.out 에 하이버네이트 실행 SQL을 남긴다.
+        format_sql: true # 쿼리가 나올때 포매팅 되서 나옴
+
+logging.level:
+  org.hibernate.SQL: debug # 옵션은 logger를 통해 하이버네이트 실행 SQL을 남긴다
+#  org.hibernate.type: trace
