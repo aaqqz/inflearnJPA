@@ -42,12 +42,12 @@ public class MemberService {
     // 회원 단건 조회
     //@Transactional(readOnly = true) // 읽기 전용(조회) 쿼리에서 성능 최적화
     public Member findOne(Long id) {
-        return memberRepository.findOne(id);
+        return memberRepository.findById(id).get();
     }
 
     @Transactional
     public void update(Long id, String name) {
-        Member member = memberRepository.findOne(id);
+        Member member = memberRepository.findById(id).get();
         member.setName(name);
     }
 }
