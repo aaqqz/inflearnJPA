@@ -8,6 +8,11 @@ import javax.persistence.*;
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // jpa 표준 스팩 -> entity 는 기본 생성자 하나가 필요 (access level 이 protected 까지)
 @ToString(of = {"id", "username", "age"}) // 연관관계 필드는 제외 -> 무한루프를 돈다
+
+//@NamedQuery( // 잘 안씀
+//        name = "Member.findByUsername",
+//        query = "select m from Member m where m.username = :username"
+//)
 public class Member {
 
     @Id @GeneratedValue
