@@ -13,6 +13,8 @@ import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 import study.datajpa.entity.Team;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +32,10 @@ class MemberRepositoryTest {
 
     @Autowired
     TeamRepository teamRepository;
-    
+
+    @PersistenceContext
+    EntityManager em;
+
     @Test
     public void testMember() throws Exception {
         System.out.println("memberRepository = " + memberRepository.getClass());
@@ -207,6 +212,81 @@ class MemberRepositoryTest {
         assertThat(page.getTotalPages()).isEqualTo(2); //전체 페이지 번호 (slice X 페이징이 없기 때문)
         assertThat(page.isFirst()).isTrue(); //첫번째 항목인가?
         assertThat(page.hasNext()).isTrue(); //다음 페이지가 있는가?
+    }
+
+    @Test
+    public void bulkUpdate(){
+        // given
+        memberRepository.save(new Member("member1", 10));
+        memberRepository.save(new Member("member2", 19));
+        memberRepository.save(new Member("member3", 20));
+        memberRepository.save(new Member("member4", 21));
+        memberRepository.save(new Member("member5", 40));
+
+
+        // when
+        int resultCount = memberRepository.bulkAgePlus(20);
+        // em.flush();
+//        em.clear(); @Modifying 어노테이션 옵션으로 해결
+
+        List<Member> result = memberRepository.findByUsername("member5");
+        Member member5 = result.get(0);
+        System.out.println("member5 = " + member5);
+
+        // then
+        assertThat(resultCount).isEqualTo(3);
+    }
+
+    @Test
+    public void findMemberLazy() {
+        // given
+        // member1 -> teamA
+        // member2 -> teamB
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+        teamRepository.save(teamA);
+        teamRepository.save(teamB);
+
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member2", 10, teamB);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        em.flush();
+        em.clear();
+
+        // when
+        // select Member N(team)  + 1(member)
+        List<Member> members = memberRepository.findAll();
+
+        for (Member member : members) {
+            System.out.println("member = " + member.getUsername());
+            System.out.println("member.teamClass = " + member.getTeam().getClass()); // lazy일때 proxy 객체 생성
+            // select Team (fetch join Lazy)
+            System.out.println("member.team = " + member.getTeam().getName()); // 직접 조회시 select
+        }
+
+        // fetch join
+        List<Member> membersFetch = memberRepository.findMemberFetchJoin();
+        for (Member member : membersFetch) {
+            System.out.println("membersFetch = " + member.getUsername());
+            System.out.println("membersFetch.teamClass = " + member.getTeam().getClass()); // lazy일때 proxy 객체 생성
+            // select Team (fetch join Lazy)
+            System.out.println("membersFetch.team = " + member.getTeam().getName()); // 직접 조회시 select
+        }
+
+        // fetch join
+        List<Member> methodQuery = memberRepository.findAll();
+        for (Member member : methodQuery) {
+            System.out.println("methodQuery = " + member.getUsername());
+            System.out.println("methodQuery.teamClass = " + member.getTeam().getClass()); // lazy일때 proxy 객체 생성
+            // select Team (fetch join Lazy)
+            System.out.println("methodQuery.team = " + member.getTeam().getName()); // 직접 조회시 select
+        }
+
+        // fetch join
+        List<Member> findMemberEntityGraph = memberRepository.findMemberEntityGraph();
+        List<Member> findEntityGraphByUsername = memberRepository.findEntityGraphByUsername("member1");
 
     }
 }
