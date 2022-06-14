@@ -12,6 +12,7 @@ spring:
       hibernate:
 #        show_sql: true
         format_sql: true
+        use_sql_comments: true # p6spy 같이 사용지 파라미터 null 이슈 있음
 
 logging.level:
   org.hibernate.SQL: debug

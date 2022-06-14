@@ -11,6 +11,7 @@ import study.querydsl.entity.Hello;
 import study.querydsl.entity.QHello;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -19,7 +20,7 @@ import static org.assertj.core.api.Assertions.*;
 @Commit
 class QuerydslApplicationTests {
 
-	@Autowired
+	@PersistenceContext
 	EntityManager em;
 
 	@Test
