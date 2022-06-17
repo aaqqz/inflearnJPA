@@ -1,5 +1,6 @@
 package study.querydsl;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ExpressionUtils;
@@ -18,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 import study.querydsl.dto.MemberDto;
+import study.querydsl.dto.QMemberDto;
 import study.querydsl.dto.UserDto;
 import study.querydsl.entity.Member;
 import study.querydsl.entity.QMember;
@@ -621,5 +623,54 @@ public class QuerydslBasicTest {
         for (UserDto userDto : result) {
             System.out.println("memberDto = " + userDto);
         }
+    }
+    
+    @Test
+    public void findDtoByQueryProjection() throws Exception{
+
+        List<MemberDto> result = queryFactory
+                .select(new QMemberDto(member.username, member.age))
+                .from(member)
+                .fetch();
+
+        for (MemberDto memberDto : result) {
+            System.out.println("memberDto = " + memberDto);
+        }
+
+        List<MemberDto> result2 = queryFactory
+                .select(new QMemberDto(member.username, member.age, member.id))
+                .from(member)
+                .fetch();
+        for (MemberDto memberDto : result2) {
+            System.out.println("memberDto2 = " + memberDto);
+        }
+
+        MemberDto memberDtoA = new MemberDto("userA", 20);
+        System.out.println("memberDtoA = " + memberDtoA);
+        MemberDto memberDtoB = new MemberDto("userB", 20, 1L);
+        System.out.println("memberDtoB = " + memberDtoB);
+    }
+
+    @Test
+    public void dynamicQuery_BooleanBuilder() throws Exception{
+        String usernameParam = "member1";
+        Integer ageParam = 10;
+
+        List<Member> result = searchMember1(usernameParam, ageParam);
+
+        assertThat(result.size()).isEqualTo(1);
+    }
+
+    private List<Member> searchMember1(String usernameCond, Integer ageCont) {
+
+        BooleanBuilder builder = new BooleanBuilder();
+        if (usernameCond != null) {
+
+        }
+
+        return queryFactory
+                .selectFrom(member)
+                .where()
+                .fetch();
     }
 }
