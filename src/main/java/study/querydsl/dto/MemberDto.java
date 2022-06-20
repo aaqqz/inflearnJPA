@@ -13,7 +13,7 @@ public class MemberDto {
 
     private Long test;
 
-    @QueryProjection
+    @QueryProjection // DTO QFile 생성
     public MemberDto(String username, int age) {
         this.username = username;
         this.age = age;
