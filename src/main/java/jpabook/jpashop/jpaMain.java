@@ -27,11 +27,7 @@ public class jpaMain {
             book.setName("JPA");
             book.setAuthor("김영한");
 
-
             em.persist(book);
-
-
-
 
             tx.commit();
         } catch (Exception e) {
