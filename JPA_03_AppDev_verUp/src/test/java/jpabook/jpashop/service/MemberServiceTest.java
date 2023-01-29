@@ -2,6 +2,7 @@ package jpabook.jpashop.service;
 
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.repository.MemberRepository;
+import jpabook.jpashop.repository.MemberRepositoryOld;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +22,8 @@ import static org.junit.Assert.*;
 public class MemberServiceTest {
 
     @Autowired MemberService memberService;
-    @Autowired MemberRepository memberRepository;
+    @Autowired
+    MemberRepositoryOld memberRepository;
     @Autowired EntityManager em;
 
     @Test
@@ -32,10 +34,10 @@ public class MemberServiceTest {
         member.setName("kim");
 
         //when
-        memberService.join(member);
+        Long savedId = memberService.join(member);
         //then
         em.flush(); // insert문 보내고 -> @Transactional 롤백 (db 반영 X)
-        assertEquals(member, memberRepository.findOne(member.getId())); // 같은 트랜젝션 안에서 같은 영속성컨텍스트에서 관리하기 때문에 true
+        assertEquals(member, memberRepository.findOne(savedId)); // 같은 트랜젝션 안에서 같은 영속성컨텍스트에서 관리하기 때문에 true
     }
 
     @Test(expected = IllegalStateException.class)
