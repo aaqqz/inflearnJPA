@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/jpashop
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+#      ddl-auto: none
+      ddl-auto: create # application 실행 시점에 Entity 지우고 다시 만듬
+    properties:
+      hibernate:
+#        show_sql: true # 쿼리 로그가 System.out 으로 찍음 권장 X
+        format_sql: true
+        default_batch_fetch_size: 500 # 100~1000 사이 was 가 버틸만큼 설정
+#    open-in-view: false
+logging:
+  level:
+    org.hibernate.SQL: debug # 쿼리 로그 남기기
+#    org.hibernate.type: trace # 쿼리 파라미터 로그 남기기
