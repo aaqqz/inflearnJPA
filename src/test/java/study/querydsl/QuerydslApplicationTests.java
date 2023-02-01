@@ -18,6 +18,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Transactional
 class QuerydslApplicationTests {
 
+	// todo 테스트 검증 코드 assertj 로 변경
+
 	@Autowired
 	EntityManager em;
 
