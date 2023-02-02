@@ -65,15 +65,22 @@ public class QuerydslBasicTest {
 
     @Test
     void startQuerydsl() {
-        // querydsl 은 jpql 의 빌더역활을 한다
+
+//        EntityManager 로 JPAQueryFactory 생성
 //        JPAQueryFactory queryFactory = new JPAQueryFactory(em); // querydsl 의존성 주입
+
+//        Querydsl은 JPQL 빌더
+
+//        JPQL: 문자(실행 시점 오류), Querydsl: 코드(컴파일 시점 오류)
+//        JPQL: 파라미터 바인딩 직접, Querydsl: 파라미터 바인딩 자동 처리
+
 //        QMember m = new QMember("m"); // 별칭 직접 지정
 //        QMember member = QMember.member; // 기본 인스턴스 사용
 
         Member findMember = queryFactory
                 .select(member)
                 .from(member)
-                .where(member.username.eq("member1"))
+                .where(member.username.eq("member1")) //파라미터 바인딩 처리
                 .fetchOne();
         assertThat(findMember.getUsername()).isEqualTo("member1");
     }

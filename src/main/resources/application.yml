@@ -12,6 +12,7 @@ spring:
       hibernate:
 #        show_sql: true # sql system.out
         format_sql: true # sql log
+      use_sql_comments: true # JPQL log
 
   h2:
     console:
