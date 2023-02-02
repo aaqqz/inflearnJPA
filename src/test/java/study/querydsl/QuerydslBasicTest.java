@@ -1,33 +1,28 @@
 package study.querydsl;
 
-import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 import study.querydsl.entity.Member;
-import study.querydsl.entity.QMember;
-import study.querydsl.entity.QTeam;
 import study.querydsl.entity.Team;
 
 import javax.persistence.EntityManager;
-
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static study.querydsl.entity.QMember.*;
-import static study.querydsl.entity.QTeam.*;
+import static org.assertj.core.api.Assertions.*;
+import static study.querydsl.entity.QMember.member;
+import static study.querydsl.entity.QTeam.team;
 
 @SpringBootTest
 @Transactional
 public class QuerydslBasicTest {
-
-    // todo 테스트 검증 코드 assertj 로 변경
 
     @Autowired
     EntityManager em;
@@ -63,7 +58,7 @@ public class QuerydslBasicTest {
                 .setParameter("username", "member1")
                 .getSingleResult();
 
-        assertEquals("member1", findMember.getUsername());
+        assertThat(findMember.getUsername()).isEqualTo("member1");
     }
 
     @Test
@@ -78,8 +73,7 @@ public class QuerydslBasicTest {
                 .from(member)
                 .where(member.username.eq("member1"))
                 .fetchOne();
-
-        assertEquals("member1", findMember.getUsername());
+        assertThat(findMember.getUsername()).isEqualTo("member1");
     }
 
     @Test
@@ -93,7 +87,7 @@ public class QuerydslBasicTest {
                         .and(member.age.eq(10)))
                 .fetchOne();
 
-        assertEquals("member1", findMember.getUsername());
+        assertThat(findMember.getUsername()).isEqualTo("member1");
 
 //        JPQL이 제공하는 모든 검색 조건 제공
 //        member.username.eq("member1") // username = 'member1'
@@ -130,8 +124,7 @@ public class QuerydslBasicTest {
                         null
                 )
                 .fetchOne();
-
-        assertEquals("member1", findMember.getUsername());
+        assertThat(findMember.getUsername()).isEqualTo("member1");
     }
 
     @Test
@@ -155,6 +148,7 @@ public class QuerydslBasicTest {
         // 단 건
         Member fetchOne = queryFactory
                 .selectFrom(member)
+                .where(member.username.eq("member1"))
                 .fetchOne();
 
         // 처음 한 건 조회
@@ -192,9 +186,9 @@ public class QuerydslBasicTest {
         Member member6 = result.get(1);
         Member memberNull = result.get(2);
 
-        assertEquals("member5", member5.getUsername());
-        assertEquals("member6", member6.getUsername());
-        assertNull(memberNull.getUsername());
+        assertThat(member5.getUsername()).isEqualTo("member5");
+        assertThat(member6.getUsername()).isEqualTo("member6");
+        assertThat(memberNull.getUsername()).isNull();
     }
 
     @Test
@@ -213,7 +207,8 @@ public class QuerydslBasicTest {
                 .limit(2) //최대 2건 조회
                 .fetch();
 
-        assertEquals(2, result.size());
+        assertThat(result.size()).isEqualTo(2);
+        //assertEquals(2, result.size());
     }
 
     /**
@@ -246,11 +241,11 @@ public class QuerydslBasicTest {
         Tuple tuple = result.get(0);
         Long count = tuple.get(member.count());
 
-        assertEquals(4, tuple.get(member.count()));
-        assertEquals(100, tuple.get(member.age.sum()));
-        assertEquals(25, tuple.get(member.age.avg()));
-        assertEquals(40, tuple.get(member.age.max()));
-        assertEquals(10, tuple.get(member.age.min()));
+        assertThat(tuple.get(member.count())).isEqualTo(4);
+        assertThat(tuple.get(member.age.sum())).isEqualTo(100);
+        assertThat(tuple.get(member.age.avg())).isEqualTo(25);
+        assertThat(tuple.get(member.age.max())).isEqualTo(40);
+        assertThat(tuple.get(member.age.min())).isEqualTo(10);
     }
 
     /**
@@ -275,12 +270,57 @@ public class QuerydslBasicTest {
 
         Tuple teamA = result.get(0);
         Tuple teamB = result.get(1);
-        assertEquals("teamA", teamA.get(team.name));
-        assertEquals(15, teamA.get(member.age.avg()));
 
-        assertEquals("teamB", teamB.get(team.name));
-        assertEquals(35, teamB.get(member.age.avg()));
+        assertThat(teamA.get(team.name)).isEqualTo("teamA");
+        assertThat(teamA.get(member.age.avg())).isEqualTo(15);
+
+        assertThat(teamB.get(team.name)).isEqualTo("teamB");
+        assertThat(teamB.get(member.age.avg())).isEqualTo(35);
     }
 
+    /**
+     * 팀 A에 소속된 모든 회원
+     */
+    @Test
+    @DisplayName("조인(기본 조인)")
+    void join() {
+//        join() , innerJoin() : 내부 조인(inner join)
+//        leftJoin() : left 외부 조인(left outer join)
+//        rightJoin() : rigth 외부 조인(rigth outer join)
 
+        List<Member> result = queryFactory
+                .selectFrom(member)
+                .join(member.team, team)
+                .where(team.name.eq("teamA"))
+                .fetch();
+
+        assertThat(result)
+                .extracting("username")
+                .containsExactly("member1", "member2");
+    }
+
+    /**
+     *  세타 조인(연관관계가 없는 필드로 조인
+     * 회원의 이름이 팀 이름과 같은 회원 조회
+     */
+    @Test
+    @DisplayName("세타 조인(연관관계 없을때)")
+    void theta_join() {
+//        from 절에 여러 엔티티를 선택해서 세타 조인
+//        외부 조인 불가능 -> 조인 on을 사용하면 외부 조인 가능
+
+        em.persist(new Member("teamA"));
+        em.persist(new Member("teamB"));
+        em.persist(new Member("teamC"));
+
+        List<Member> result = queryFactory
+                .select(member)
+                .from(member, team)
+                .where(member.username.eq(team.name))
+                .fetch();
+
+        assertThat(result)
+                .extracting("username")
+                .containsExactly("teamA", "teamB");
+    }
 }
