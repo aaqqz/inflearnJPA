@@ -919,12 +919,95 @@ public class QuerydslBasicTest {
     }
 
     @Test
+    @DisplayName("벌크연산_(수정)")
     void bulkUpdate() {
+//        주의: JPQL 배치와 마찬가지로, 영속성 컨텍스트에 있는 엔티티를 무시하고 실행되기 때문에 배치 쿼리를
+//        실행하고 나면 영속성 컨텍스트를 초기화 하는 것이 안전하다.
+
+        // 쿼리 한번으로 대량 데이터 수정
+        // 벌크연산은 영속성 컨텍스트를 무시하고 DB에 반영
+
+        // member1  = 10 -> 비회원
+        // member2  = 20 -> 비회원
+        // member3  = 30 -> 유지
+        // member4  = 40 -> 유지
+
         long count = queryFactory
                 .update(member)
                 .set(member.username, "비회원")
                 .where(member.age.lt(28))
                 .execute();
+
+        // 벌크연산 실행후 영속성컨텡스트 초기화 해야함!!!
+        em.flush();
+        em.clear();
+
+        // 초기화 하지 않으면 영속성컨텍스트의 값을 가져옴
+        List<Member> result = queryFactory
+                .selectFrom(member)
+                .fetch();
+        for (Member member : result) {
+            System.out.println("member = " + member);
+        }
     }
 
+    @Test
+    @DisplayName("벌크연산_(더하기)")
+    void bulkAdd() {
+
+        // 곱하기: multiply(x)
+
+        long count = queryFactory
+                .update(member)
+//                .set(member.age, member.age.add(1))
+                .set(member.age, member.age.multiply(2))
+                .execute();
+    }
+
+    @Test
+    @DisplayName("벌크연산_(삭제)")
+    void bulkDelete() {
+
+        long count = queryFactory
+                .delete(member)
+                .where(member.age.gt(18))
+                .execute();
+    }
+
+    @Test
+    @DisplayName("SQL function 호출하기")
+    void sqlFunction() {
+//        SQL function은 JPA와 같이 Dialect에 등록된 내용만 호출할 수 있다.
+
+//        member M으로 변경하는 replace 함수 사용
+        List<String> result = queryFactory
+                .select(Expressions.stringTemplate(
+                        "function('replace', {0}, {1}, {2})",
+                        member.username, "member", "M"))
+                .from(member)
+                .fetch();
+
+        for (String s : result) {
+            System.out.println("s = " + s);
+        }
+    }
+
+    @Test
+    @DisplayName("SQL function 호출하기")
+    void sqlFunction2() {
+        // lower 같은 ansi 표준 함수들은 querydsl이 상당부분 내장하고 있다
+        // 소문자로 변경해서 비교해라
+
+        List<String> result = queryFactory
+                .select(member.username)
+                .from(member)
+//                .where(member.username.eq(
+//                        Expressions.stringTemplate("function('lower', {0}", member.username)))
+                .where(member.username.eq(member.username.lower()))
+                .fetch();
+
+        for (String s : result) {
+            System.out.println("s = " + s);
+        }
+    }
 }
