@@ -1,7 +1,6 @@
 package study.querydsl.repository;
 
-import com.querydsl.core.annotations.QueryProjection;
-import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,20 +14,23 @@ import study.querydsl.entity.Team;
 import javax.persistence.EntityManager;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-class MemberJpqRepositoryTest {
+class MemberJpaRepositoryTest {
 
     @Autowired
     EntityManager em;
 
     @Autowired
     MemberJpaRepository memberJpaRepository;
+
+    @BeforeEach
+    void clear() {
+
+    }
 
     @Test
     @DisplayName("순수 JPA 리포지토리")

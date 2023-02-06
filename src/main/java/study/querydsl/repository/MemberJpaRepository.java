@@ -22,6 +22,7 @@ import static org.springframework.util.StringUtils.*;
 import static study.querydsl.entity.QMember.*;
 import static study.querydsl.entity.QTeam.*;
 
+// 순수 JPA
 @Repository
 public class MemberJpaRepository {
 
